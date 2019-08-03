@@ -1,0 +1,22 @@
+{
+  "name": "kickstart",
+  "version": "1.0.0",
+  "description": "Frontend for Campaign/Campaign Factory ethereum contracts",
+  "main": "index.js",
+  "author": "Steve Sargent",
+  "license": "MIT",
+  "scripts": {
+    "compile": "node ./ethereum/compile.js",
+    "test": "mocha"
+  },
+  "devDependencies": {
+    "ganache-cli": "^6.4.5",
+    "mocha": "^6.1.4"
+  },
+  "dependencies": {
+    "dotenv": "^8.0.0",
+    "fs-extra": "^8.1.0",
+    "solc": "^0.4.25",
+    "web3": "1.0.0-beta.55"
+  }
+}
