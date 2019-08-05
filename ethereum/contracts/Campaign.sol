@@ -5,7 +5,7 @@ contract CampaignFactory {
 
     function createCampaign(uint256 _minimumContribution) public payable {
         // Create campaign
-        address newCampaign = new Campaign(_minimumContribution);
+        address newCampaign = new Campaign(msg.sender, _minimumContribution);
         deployedCampaigns.push(newCampaign);
     }
 
@@ -35,8 +35,8 @@ contract Campaign {
         _;
     }
 
-    constructor(uint256 _minimumContribution) public {
-        manager = tx.origin;
+    constructor(address _manager, uint256 _minimumContribution) public {
+        manager = _manager;
         minimumContribution = _minimumContribution;
     }
     
