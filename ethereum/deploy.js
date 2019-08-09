@@ -1,9 +1,9 @@
 (async function() {
-  require("dotenv").config();
+  require('dotenv').config();
 
-  const HDWalletProvider = require("truffle-hdwallet-provider");
-  const Web3 = require("web3");
-  const campaignFactoryJson = require("./build/CampaignFactory.json");
+  const HDWalletProvider = require('truffle-hdwallet-provider');
+  const Web3 = require('web3');
+  const campaignFactoryJson = require('./build/CampaignFactory.json');
 
   const endpoint = process.env.INFURA_ENDPOINT;
   const mneumonic = process.env.TEST_MNEUMONIC;
@@ -24,7 +24,7 @@
       JSON.parse(campaignFactoryJson.interface)
     )
       .deploy({ data: campaignFactoryJson.bytecode })
-      .send({ gas: "1000000", from: accounts[0] });
+      .send({ gas: '1000000', from: accounts[0] });
 
     console.log(
       `CampaignFactory Contract deployed to ${factoryReceipt.options.address}`

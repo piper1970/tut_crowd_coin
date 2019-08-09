@@ -1,34 +1,58 @@
-import React, { useState } from "react";
-import Layout from "../../components/Layout";
-import { Input, Button, Form } from "semantic-ui-react";
+import React, { useState } from 'react';
+import Layout from '../../components/Layout';
+import { Input, Button, Form, Message } from 'semantic-ui-react';
+import factory from '../../ethereum/factory';
+import web3 from '../../ethereum/web3';
 
 const CampaignNew = () => {
   const [minimumWei, setminimumWei] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleChange = e => {
     setminimumWei(e.target.value);
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
+
+    try {
+      setLoading(true);
+      setErrorMessage('');
+      const accounts = await web3.eth.getAccounts();
+      await factory.methods.createCampaign(minimumWei).send({
+        from: accounts[0]
+      });
+    } catch (error) {
+      setErrorMessage(error.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <Layout>
       <h3>Create a Campaign</h3>
-      <Form onSubmit={handleSubmit}>
+      <Form onSubmit={handleSubmit} error={!!errorMessage}>
         <Form.Field>
           <label>Minimum Contribution</label>
           <Input
             label='wei'
             labelPosition='right'
-            placeholder="Initial Amount in Wei"
-            name="initialAmount"
+            placeholder='Initial Amount in Wei'
+            name='initialAmount'
             value={minimumWei}
             onChange={handleChange}
           />
         </Form.Field>
-        <Button primary>Create</Button>
+        <Message
+          error
+          header='An error has occurred while attempting to create a campaign'
+          content={errorMessage}
+        />
+        <Button primary loading={loading}>
+          Create
+        </Button>
       </Form>
     </Layout>
   );

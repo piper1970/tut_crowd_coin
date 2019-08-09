@@ -1,15 +1,10 @@
-"use strict";
+require('dotenv').config();
 
-require("dotenv").config();
+import web3 from './web3';
+import CampaignFactory from './build/CampaignFactory.json';
 
-import { getWeb3 } from "./web3";
-import CampaignFactory from "./build/CampaignFactory.json";
+const address = process.env.CAMPAIGN_FACTORY_ADDRESS;
+const abi = JSON.parse(CampaignFactory.interface);
+const instance = new web3.eth.Contract(abi, address);
 
-const getFactoryInstance = async () => {
-  const web3 = await getWeb3();
-  const address = process.env.CAMPAIGN_FACTORY_ADDRESS;
-  const abi = JSON.parse(CampaignFactory.interface);
-  return new web3.eth.Contract(abi, address);
-};
-
-export { getFactoryInstance };
+export default instance;
