@@ -27,6 +27,7 @@ const CampaignNew = () => {
       setErrorMessage(error.message);
     } finally {
       setLoading(false);
+      setminimumWei('');
     }
   };
 
