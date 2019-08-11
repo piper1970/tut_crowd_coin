@@ -8,9 +8,9 @@ import { Link } from '../../routes';
 
 const Show = props => {
   const { address, minimumContribution, manager } = props;
-  const [balance, setBalance] = useState(props.balance.toString());
-  const [pendingRequests, setPendingRequests] = useState(props.pendingRequests.toString());
-  const [approversCount, setApproversCount] = useState(props.approversCount.toString());
+  const [balance, setBalance] = useState(props.balance);
+  const [pendingRequests, setPendingRequests] = useState(props.pendingRequests);
+  const [approversCount, setApproversCount] = useState(props.approversCount);
 
   const updateShow = async () => {
     try {
@@ -20,9 +20,9 @@ const Show = props => {
         '2': _pendingRequests,
         '3': _approversCount
       } = await campaign.methods.getSummary().call();
-      setBalance(_balance);
-      setPendingRequests(_pendingRequests);
-      setApproversCount(_approversCount);
+      setBalance(_balance.toString());
+      setPendingRequests(_pendingRequests.toString());
+      setApproversCount(_approversCount.toString());
     } catch (error) {
       console.error(error.message);
     }
@@ -39,24 +39,24 @@ const Show = props => {
       },
       {
         meta: 'Minimum Contribution (wei)',
-        header: `${minimumContribution.toString()}`,
+        header: `${minimumContribution}`,
         description:
           'The minimum contribution, in wei, needed to be considered a contributor'
       },
       {
         meta: 'Campaign Balance (ether)',
-        header: `${web3.utils.fromWei(balance.toString(), 'ether')}`,
+        header: `${web3.utils.fromWei(balance, 'ether')}`,
         description: 'Total balance of the campaign'
       },
       {
         meta: 'Number of Pending Requests',
-        header: `${pendingRequests.toString()}`,
+        header: `${pendingRequests}`,
         description:
           'Number or requests awaiting approval. Requests must be approved by a majority of the contributors'
       },
       {
         meta: 'Number of Contributors',
-        header: `${approversCount.toString()}`,
+        header: `${approversCount}`,
         description: 'Number of contributors to campaign'
       }
     ];
@@ -101,10 +101,10 @@ Show.getInitialProps = async ({ query }) => {
   } = await campaign.methods.getSummary().call();
   return {
     manager,
-    minimumContribution,
-    balance,
-    pendingRequests,
-    approversCount,
+    minimumContribution: minimumContribution.toString(),
+    balance: balance.toString(),
+    pendingRequests: pendingRequests.toString(),
+    approversCount: approversCount.toString(),
     address
   };
 };

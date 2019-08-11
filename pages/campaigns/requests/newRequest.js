@@ -24,7 +24,7 @@ const NewRequest = ({ address, campaign }) => {
         .send({
           from: accounts[0]
         });
-      Router.pushRoute(`/campaigns/${address}`);
+      Router.pushRoute(`/campaigns/${address}/requests`);
     } catch (error) {
       setErrorMessage(error.message);
     }
@@ -76,7 +76,7 @@ const NewRequest = ({ address, campaign }) => {
   );
 };
 
-NewRequest.getInitialProps = async ({ query }) => {
+NewRequest.getInitialProps = ({ query }) => {
   const { address } = query;
   const campaign = getCampaign(address);
   return { address, campaign };

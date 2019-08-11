@@ -1,14 +1,14 @@
-import React, { useState } from "react";
-import { Grid, Button, Table, Message } from "semantic-ui-react";
-import Layout from "../../../components/Layout";
-import getCampaign from "../../../ethereum/campaign";
-import { Link } from "../../../routes";
-import web3 from "../../../ethereum/web3";
+import React, { useState } from 'react';
+import { Grid, Button, Table, Message } from 'semantic-ui-react';
+import Layout from '../../../components/Layout';
+import getCampaign from '../../../ethereum/campaign';
+import { Link } from '../../../routes';
+import web3 from '../../../ethereum/web3';
 
 const ShowRequest = props => {
   const [requests, setRequests] = useState(props.requests);
   const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState('');
   const { address, requestCount, approversCount } = props;
 
   const updateRequests = async () => {
@@ -21,6 +21,10 @@ const ShowRequest = props => {
             return campaign.methods.requests(index).call();
           })
       );
+
+      // Somehow, this triggers change in requests...
+      console.log('requests', JSON.stringify(_requests));
+      
       setRequests(_requests);
     } catch (error) {
       console.error(error.message);
@@ -30,7 +34,7 @@ const ShowRequest = props => {
   const approveRequest = async id => {
     try {
       setLoading(true);
-      setErrorMessage("");
+      setErrorMessage('');
       const accounts = await web3.eth.getAccounts();
       const campaign = getCampaign(address);
       await campaign.methods.approveRequest(id).send({
@@ -62,26 +66,28 @@ const ShowRequest = props => {
     if (requestCount === 0) {
       return null;
     }
-
     return requests.map((request, index) => {
-      const { description, amount, recipient, approvalCount } = request;
+      const { description, amount: amountBN, recipient, approvalCount:approvalCountBN } = request;
+      const approvalCount = approvalCountBN.toString();
+      const amount = amountBN.toString();
+
       return (
         <Table.Row key={index}>
           <Table.Cell>{index}</Table.Cell>
           <Table.Cell>{description}</Table.Cell>
-          <Table.Cell>{amount.toString()}</Table.Cell>
+          <Table.Cell>{amount}</Table.Cell>
           <Table.Cell>{recipient}</Table.Cell>
-          <Table.Cell>{`${approvalCount.toString()}/${approversCount.toString()}`}</Table.Cell>
+          <Table.Cell>{`${approvalCount}/${approversCount}`}</Table.Cell>
           <Table.Cell>
             <Button
-              content="Approve"
+              content='Approve'
               onClick={() => approveRequest(index)}
               loading={loading}
             />
           </Table.Cell>
           <Table.Cell>
             <Button
-              content="Finalize"
+              content='Finalize'
               onClick={() => finalizeRequest(index)}
               loading={loading}
             />
@@ -94,13 +100,20 @@ const ShowRequest = props => {
     <Layout>
       <Grid>
         <Grid.Row>
-          <Grid.Column width={12}>
+          <Grid.Column width={10}>
             <h3>Requests</h3>
           </Grid.Column>
-          <Grid.Column width={4}>
+          <Grid.Column width={3}>
+          <Link route={`/campaigns/${address}`}>
+            <a>
+              <Button content='Back to Details' primary loading={loading} />
+            </a>
+          </Link>
+        </Grid.Column>
+          <Grid.Column width={3}>
             <Link route={`/campaigns/${address}/requests/new`}>
               <a>
-                <Button content="New Request" primary loading={loading} />
+                <Button content='New Request' primary loading={loading} />
               </a>
             </Link>
           </Grid.Column>
@@ -127,10 +140,10 @@ const ShowRequest = props => {
       <Message
       error
       hidden={!errorMessage}
-      header="An error has occurred while attempting to create a request"
+      header='An error has occurred while attempting to create a request'
       content={errorMessage}
     />
-      <h3>{requestCount.toString()} requests found</h3>
+      <h3>{requestCount} requests found</h3>
     </Layout>
   );
 };
@@ -149,7 +162,7 @@ ShowRequest.getInitialProps = async ({ query }) => {
       })
   );
 
-  return { address, requests, requestCount, approversCount };
+  return { address, requests, requestCount:requestCount.toString(), approversCount:approversCount.toString() };
 };
 
 export default ShowRequest;
