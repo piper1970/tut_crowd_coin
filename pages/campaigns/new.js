@@ -3,6 +3,7 @@ import Layout from '../../components/Layout';
 import { Input, Button, Form, Message } from 'semantic-ui-react';
 import factory from '../../ethereum/factory';
 import web3 from '../../ethereum/web3';
+import {Router} from '../../routes';
 
 const CampaignNew = () => {
   const [minimumWei, setminimumWei] = useState('');
@@ -23,12 +24,11 @@ const CampaignNew = () => {
       await factory.methods.createCampaign(minimumWei).send({
         from: accounts[0]
       });
+      Router.pushRoute('/');
     } catch (error) {
       setErrorMessage(error.message);
-    } finally {
-      setLoading(false);
-      setminimumWei('');
     }
+    setLoading(false);
   };
 
   return (

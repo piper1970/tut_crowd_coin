@@ -1,16 +1,19 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Card, Button } from 'semantic-ui-react';
 import factory from '../ethereum/factory';
 import Layout from '../components/Layout';
-import Link from 'next/link';
+import { Link } from '../routes';
 
-const Index = props => {
-  const [campaigns] = useState(props.campaigns || []);
+const Index = ({ campaigns }) => {
   const renderCampaigns = () => {
     const items = campaigns.map(campaign => {
       return {
         header: campaign,
-        description: <a>View Campaign</a>,
+        description: (
+          <Link route={`/campaigns/${campaign}`}>
+            <a>View Campaign</a>
+          </Link>
+        ),
         fluid: true
       };
     });
@@ -21,15 +24,17 @@ const Index = props => {
     <Layout>
       <div>
         <h3>Open Compaigns</h3>
-        <Link href='/campaigns/new'>
-          <Button
-            content='Create Campaign'
-            icon='add circle'
-            floated='right'
-            primary
-          />
+        <Link route={'/campaigns/new'}>
+          <a>
+            <Button
+              content='Create Campaign'
+              icon='add circle'
+              floated='right'
+              primary
+            />
+          </a>
         </Link>
-        {campaigns.length && renderCampaigns()}
+        {!!campaigns.length && renderCampaigns()}
       </div>
     </Layout>
   );

@@ -28,6 +28,7 @@ contract Campaign {
     uint256 public minimumContribution;
     mapping(address => bool) public approvers;
     uint256 public approversCount;
+    uint256 public pendingRequests;
     Request[] public requests;
     
     modifier restricted() {
@@ -51,6 +52,7 @@ contract Campaign {
         });
 
         requests.push(newRequest);
+        pendingRequests++;
     }
 
     function contribute() public payable{
@@ -79,5 +81,23 @@ contract Campaign {
 
         request.recipient.transfer(request.amount);
         request.complete = true;
+        
+        pendingRequests--;
+    }
+
+    function getSummary() public view returns(
+        uint256, uint256, uint256, uint256, address
+    ){
+        return (
+            minimumContribution,
+            address(this).balance,
+            pendingRequests,
+            approversCount,
+            manager
+        );
+    }
+
+    function getRequestsCount() public view returns (uint256){
+        return requests.length;
     }
 }
