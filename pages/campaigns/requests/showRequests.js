@@ -4,6 +4,7 @@ import Layout from '../../../components/Layout';
 import getCampaign from '../../../ethereum/campaign';
 import { Link } from '../../../routes';
 import web3 from '../../../ethereum/web3';
+import RequestRow from '../../../components/RequestRow';
 
 const ShowRequest = props => {
   const [requests, setRequests] = useState(props.requests);
@@ -50,6 +51,8 @@ const ShowRequest = props => {
 
   const finalizeRequest = async id => {
     try {
+      setLoading(true);
+      setErrorMessage('');
       const accounts = await web3.eth.getAccounts();
       const campaign = getCampaign(address);
       await campaign.methods.finalizeRequest(id).send({
@@ -58,6 +61,7 @@ const ShowRequest = props => {
       updateRequests();
     } catch (error) {
       console.error(error.message);
+      setErrorMessage(error.message);
     }
     setLoading(false);
   };
@@ -71,29 +75,16 @@ const ShowRequest = props => {
       const approvalCount = approvalCountBN.toString();
       const amount = amountBN.toString();
 
-      return (
-        <Table.Row key={index}>
-          <Table.Cell>{index}</Table.Cell>
-          <Table.Cell>{description}</Table.Cell>
-          <Table.Cell>{amount}</Table.Cell>
-          <Table.Cell>{recipient}</Table.Cell>
-          <Table.Cell>{`${approvalCount}/${approversCount}`}</Table.Cell>
-          <Table.Cell>
-            <Button
-              content='Approve'
-              onClick={() => approveRequest(index)}
-              loading={loading}
-            />
-          </Table.Cell>
-          <Table.Cell>
-            <Button
-              content='Finalize'
-              onClick={() => finalizeRequest(index)}
-              loading={loading}
-            />
-          </Table.Cell>
-        </Table.Row>
-      );
+      const requestRowProps = {
+        index, description, amount, recipient,
+        approvalCount, approversCount, approveRequest,
+        finalizeRequest, loading};
+      
+      return (<RequestRow 
+        key={index}
+        {...requestRowProps}
+      />);
+      
     });
   };
   return (

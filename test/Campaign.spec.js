@@ -64,7 +64,7 @@ describe("Campaign", async function() {
     campaign = await new web3.eth.Contract(JSON.parse(campaignJson.interface))
       .deploy({
         data: campaignJson.bytecode,
-        arguments: [MIN_WEI]
+        arguments: [accounts[0], MIN_WEI]
       })
       .send({ from: accounts[0], gas: "1000000" });
 
