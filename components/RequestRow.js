@@ -1,40 +1,54 @@
 import React from 'react';
-import {Button, Table} from 'semantic-ui-react';
+import { Button, Table, Icon } from 'semantic-ui-react';
+import web3 from '../ethereum/web3';
 
-const RequestRow = (props) => {
-    const {approveRequest, 
-        finalizeRequest,
-        index,
-        description,
-        amount,
-        recipient,
-        approvalCount,
-        approversCount,
-        loading} = props;
+const RequestRow = props => {
+  let {
+    index,
+    request,
+    approveRequest,
+    finalizeRequest,
+    loading,
+    approversCount
+  } = props;
 
-        return (
-            <Table.Row>
-              <Table.Cell>{index}</Table.Cell>
-              <Table.Cell>{description}</Table.Cell>
-              <Table.Cell>{amount}</Table.Cell>
-              <Table.Cell>{recipient}</Table.Cell>
-              <Table.Cell>{`${approvalCount}/${approversCount}`}</Table.Cell>
-              <Table.Cell>
-                <Button
-                  content='Approve'
-                  onClick={() => approveRequest(index)}
-                  loading={loading}
-                />
-              </Table.Cell>
-              <Table.Cell>
-                <Button
-                  content='Finalize'
-                  onClick={() => finalizeRequest(index)}
-                  loading={loading}
-                />
-              </Table.Cell>
-            </Table.Row>
-        );
+  approversCount = approversCount.toString();
+
+  let { description, amount, recipient, approvalCount, complete } = request;
+
+  amount = amount.toString();
+  approvalCount = approvalCount.toString();
+
+  const { Row, Cell } = Table;
+
+  return (
+    <Row>
+      <Cell>{index}</Cell>
+      <Cell>{description}</Cell>
+      <Cell>{web3.utils.fromWei(amount, 'ether')}</Cell>
+      <Cell>{recipient}</Cell>
+      <Cell>{`${approvalCount}/${approversCount}`}</Cell>
+      <Cell>
+        <Button
+          disabled={complete}
+          content='Approve'
+          onClick={() => approveRequest(index)}
+          loading={loading}
+        />
+      </Cell>
+      <Cell>
+        <Button
+          disabled={complete}
+          content='Finalize'
+          onClick={() => finalizeRequest(index)}
+          loading={loading}
+        />
+      </Cell>
+      <Cell>
+        {complete && <Icon color='green' name='checkmark' size='large' />}
+      </Cell>
+    </Row>
+  );
 };
 
 export default RequestRow;

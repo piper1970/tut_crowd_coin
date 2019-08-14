@@ -25,7 +25,7 @@ const ShowRequest = props => {
 
       // Somehow, this triggers change in requests...
       console.log('requests', JSON.stringify(_requests));
-      
+
       setRequests(_requests);
     } catch (error) {
       console.error(error.message);
@@ -71,20 +71,17 @@ const ShowRequest = props => {
       return null;
     }
     return requests.map((request, index) => {
-      const { description, amount: amountBN, recipient, approvalCount:approvalCountBN } = request;
-      const approvalCount = approvalCountBN.toString();
-      const amount = amountBN.toString();
-
       const requestRowProps = {
-        index, description, amount, recipient,
-        approvalCount, approversCount, approveRequest,
-        finalizeRequest, loading};
-      
-      return (<RequestRow 
-        key={index}
-        {...requestRowProps}
-      />);
-      
+        index,
+        address,
+        request,
+        approveRequest,
+        finalizeRequest,
+        loading,
+        approversCount
+      };
+
+      return <RequestRow key={index} {...requestRowProps} />;
     });
   };
   return (
@@ -95,12 +92,12 @@ const ShowRequest = props => {
             <h3>Requests</h3>
           </Grid.Column>
           <Grid.Column width={3}>
-          <Link route={`/campaigns/${address}`}>
-            <a>
-              <Button content='Back to Details' primary loading={loading} />
-            </a>
-          </Link>
-        </Grid.Column>
+            <Link route={`/campaigns/${address}`}>
+              <a>
+                <Button content='Back to Details' primary loading={loading} />
+              </a>
+            </Link>
+          </Grid.Column>
           <Grid.Column width={3}>
             <Link route={`/campaigns/${address}/requests/new`}>
               <a>
@@ -116,11 +113,12 @@ const ShowRequest = props => {
                 <Table.Row>
                   <Table.HeaderCell>ID</Table.HeaderCell>
                   <Table.HeaderCell>Description</Table.HeaderCell>
-                  <Table.HeaderCell>Amount</Table.HeaderCell>
+                  <Table.HeaderCell>Amount (Ether)</Table.HeaderCell>
                   <Table.HeaderCell>Recipient</Table.HeaderCell>
                   <Table.HeaderCell>Approval Count</Table.HeaderCell>
                   <Table.HeaderCell>Approve</Table.HeaderCell>
                   <Table.HeaderCell>Finalize</Table.HeaderCell>
+                  <Table.HeaderCell>Completed</Table.HeaderCell>
                 </Table.Row>
               </Table.Header>
               <Table.Body>{generateTableBody()}</Table.Body>
@@ -129,11 +127,11 @@ const ShowRequest = props => {
         </Grid.Row>
       </Grid>
       <Message
-      error
-      hidden={!errorMessage}
-      header='An error has occurred while attempting to create a request'
-      content={errorMessage}
-    />
+        error
+        hidden={!errorMessage}
+        header='An error has occurred while attempting to create a request'
+        content={errorMessage}
+      />
       <h3>{requestCount} requests found</h3>
     </Layout>
   );
@@ -153,7 +151,12 @@ ShowRequest.getInitialProps = async ({ query }) => {
       })
   );
 
-  return { address, requests, requestCount:requestCount.toString(), approversCount:approversCount.toString() };
+  return {
+    address,
+    requests,
+    requestCount: requestCount.toString(),
+    approversCount: approversCount.toString()
+  };
 };
 
 export default ShowRequest;
