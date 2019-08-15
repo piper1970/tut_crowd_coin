@@ -43,6 +43,7 @@ contract Campaign {
     
     function createRequest(address _recipient, uint256 _value, string _description)
         public restricted {
+        require(address(this) != _recipient);
         Request memory newRequest = Request({
             recipient: _recipient,
             amount: _value,

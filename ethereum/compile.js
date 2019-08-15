@@ -18,3 +18,4 @@ for(let contract in output){
     console.log(`Wrote contract ${fileName} to ${buildFolder}`);
 }
 
+

@@ -118,7 +118,6 @@ const ShowRequest = props => {
                   <Table.HeaderCell>Approval Count</Table.HeaderCell>
                   <Table.HeaderCell>Approve</Table.HeaderCell>
                   <Table.HeaderCell>Finalize</Table.HeaderCell>
-                  <Table.HeaderCell>Completed</Table.HeaderCell>
                 </Table.Row>
               </Table.Header>
               <Table.Body>{generateTableBody()}</Table.Body>
